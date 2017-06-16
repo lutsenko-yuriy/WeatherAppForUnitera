@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="city_hint">Insert city</string>
+    <string name="city_search">Find</string>
+    <string name="default_contry_name">Moscow, RU</string>
+    <string name="temperature_title">Temperature</string>
+    <string name="default_temperature_value">7˚C</string>
+    <string name="coordinates_title">Coordinates</string>
+    <string name="default_latitude">55.75˚N</string>
+    <string name="default_longitude">37.62˚E</string>
+    <string name="pressure_title">Pressure</string>
+    <string name="default_pressure">768 mmHg</string>
+    <string name="sunrise_title">Sunrise</string>
+    <string name="default_sunrise_time">8:00</string>
+    <string name="sunset_title">Sunset</string>
+    <string name="default_sunset_time">16:00</string>
+</resources>
