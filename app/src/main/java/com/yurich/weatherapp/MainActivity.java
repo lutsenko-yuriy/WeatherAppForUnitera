@@ -1,5 +1,6 @@
 package com.yurich.weatherapp;
 
+import android.arch.lifecycle.LifecycleActivity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,17 +9,38 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends LifecycleActivity {
+
+    @BindView(R.id.city_information)
+    TextView city;
+
+    @BindView(R.id.temperature)
+    TextView temperature;
+
+    @BindView(R.id.latitude)
+    TextView latitude;
+    @BindView(R.id.longitude)
+    TextView longitude;
+
+    @BindView(R.id.pressure)
+    TextView pressure;
+
+    @BindView(R.id.sunrise)
+    TextView sunrise;
+    @BindView(R.id.sunset)
+    TextView sunset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-
     }
 
     @Override

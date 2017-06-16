@@ -2,14 +2,27 @@
 <resources>
     <string name="app_name">Приложение погоды</string>
     <string name="action_settings">Настройки</string>
+
     <string name="city_hint">Введите город (на английском)</string>
     <string name="city_search">Найти</string>
+
     <string name="temperature_title">Температура</string>
+
     <string name="coordinates_title">Координаты</string>
     <string name="default_latitude">55.75˚ с.ш.</string>
     <string name="default_longitude">37.62˚ в.д.</string>
+
     <string name="pressure_title">Давление</string>
     <string name="default_pressure">768 мм рт. ст.</string>
+
     <string name="sunrise_title">Восход</string>
+
     <string name="sunset_title">Заход</string>
+
+    <string name="to_north"> с.ш.</string>
+    <string name="to_south"> ю.ш.</string>
+    <string name="to_west"> з.д.</string>
+    <string name="to_east"> в.д.</string>
+
+    <string name="pressure_unit"> кПа</string>
 </resources>
