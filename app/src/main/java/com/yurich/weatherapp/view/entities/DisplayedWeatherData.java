@@ -2,11 +2,13 @@ package com.yurich.weatherapp.view.entities;
 
 import com.yurich.weatherapp.interactor.entities.WeatherData;
 
+import java.io.Serializable;
+
 /**
  * Created by yurich on 16.06.17.
  */
 
-public class DisplayedWeatherData {
+public class DisplayedWeatherData implements Serializable {
     public String city;
     public String country;
 

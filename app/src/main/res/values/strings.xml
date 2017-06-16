@@ -30,7 +30,7 @@
 
     <string name="pressure_unit">%.0f mmHg</string>
 
-    <string name="temperature_unit">%.2f˚C</string>
+    <string name="temperature_unit">%.0f˚C</string>
 
     <string name="error_message">Failed to load weather</string>
 

@@ -3,6 +3,7 @@ package com.yurich.weatherapp;
 import android.arch.lifecycle.LifecycleActivity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -46,6 +47,9 @@ public class MainActivity extends LifecycleActivity {
 
     WeatherViewModel weatherViewModel;
 
+    public static final String WEATHER_KEY = "WEATHER_KEY";
+    DisplayedWeatherData weatherData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +65,13 @@ public class MainActivity extends LifecycleActivity {
         sunset.setVisibility(View.INVISIBLE);
 
         setupModel();
+        if (savedInstanceState == null) {
+            loadWeather();
+        } else {
+            updateView(
+                    (DisplayedWeatherData) savedInstanceState.getSerializable(WEATHER_KEY)
+            );
+        }
     }
 
     private void setupModel() {
@@ -71,32 +82,13 @@ public class MainActivity extends LifecycleActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        loadWeather();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (weatherData != null) {
+            outState.putSerializable(WEATHER_KEY, weatherData);
         }
-
-        return super.onOptionsItemSelected(item);
     }
+
 
     @OnClick(R.id.city_search_button)
     public void buttonClicked() {
@@ -119,6 +111,7 @@ public class MainActivity extends LifecycleActivity {
     }
 
     private void updateView(DisplayedWeatherData weather) {
+        weatherData = weather;
         title.setVisibility(View.VISIBLE);
         Locale locale = new Locale("", weather.country);
         title.setText(String.format("%s, %s", weather.city, locale.getDisplayCountry()));
@@ -130,14 +123,14 @@ public class MainActivity extends LifecycleActivity {
         if (weather.latitude > 0) {
             latitude.setText(getString(R.string.to_north, weather.latitude));
         } else {
-            latitude.setText(getString(R.string.to_south, weather.latitude));
+            latitude.setText(getString(R.string.to_south, -weather.latitude));
         }
 
         longitude.setVisibility(View.VISIBLE);
         if (weather.longitude > 0) {
             longitude.setText(getString(R.string.to_east, weather.longitude));
         } else {
-            longitude.setText(getString(R.string.to_west, weather.longitude));
+            longitude.setText(getString(R.string.to_west, -weather.longitude));
         }
 
         pressure.setVisibility(View.VISIBLE);
