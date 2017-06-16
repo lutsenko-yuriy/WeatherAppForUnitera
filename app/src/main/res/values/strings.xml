@@ -23,12 +23,16 @@
     <string name="sunset_title">Sunset</string>
     <string name="default_sunset_time">16:00</string>
 
-    <string name="to_north">N</string>
-    <string name="to_south">S</string>
-    <string name="to_west">W</string>
-    <string name="to_east">E</string>
+    <string name="to_north">%.2f˚N</string>
+    <string name="to_south">%.2f˚S</string>
+    <string name="to_west">%.2f˚W</string>
+    <string name="to_east">%,2f˚E</string>
 
-    <string name="pressure_unit"> kPa</string>
+    <string name="pressure_unit">%.0f mmHg</string>
 
-    <string name="temperature_unit">˚C</string>
+    <string name="temperature_unit">%.2f˚C</string>
+
+    <string name="error_message">Failed to load weather</string>
+
+    <string name="metrics">metric</string>
 </resources>

@@ -1,23 +1,32 @@
 package com.yurich.weatherapp;
 
 import android.arch.lifecycle.LifecycleActivity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import com.yurich.weatherapp.view.entities.DisplayedWeatherData;
+
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends LifecycleActivity {
 
+    @BindView(R.id.city_field)
+    EditText city;
+
     @BindView(R.id.city_information)
-    TextView city;
+    TextView title;
 
     @BindView(R.id.temperature)
     TextView temperature;
@@ -35,12 +44,36 @@ public class MainActivity extends LifecycleActivity {
     @BindView(R.id.sunset)
     TextView sunset;
 
+    WeatherViewModel weatherViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        title.setVisibility(View.INVISIBLE);
+        temperature.setVisibility(View.INVISIBLE);
+        latitude.setVisibility(View.INVISIBLE);
+        longitude.setVisibility(View.INVISIBLE);
+        pressure.setVisibility(View.INVISIBLE);
+        sunrise.setVisibility(View.INVISIBLE);
+        sunset.setVisibility(View.INVISIBLE);
+
+        setupModel();
+    }
+
+    private void setupModel() {
+        weatherViewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
+        // Создание OpenWeatherMap API создавайте сами
+        // предоставляется проверяющему(-им)
+        weatherViewModel.setupModel(getString(R.string.appid), getString(R.string.metrics));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadWeather();
     }
 
     @Override
@@ -63,5 +96,61 @@ public class MainActivity extends LifecycleActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.city_search_button)
+    public void buttonClicked() {
+        loadWeather();
+    }
+
+    private void loadWeather() {
+        if (!TextUtils.isEmpty(city.getText().toString())) {
+            weatherViewModel.getWeather(city.getText().toString())
+                    .subscribe(
+                            this::updateView,
+                            (error) -> Snackbar
+                                    .make(
+                                            findViewById(R.id.container),
+                                            R.string.error_message,
+                                            Snackbar.LENGTH_LONG
+                                    ).show()
+                    );
+        }
+    }
+
+    private void updateView(DisplayedWeatherData weather) {
+        title.setVisibility(View.VISIBLE);
+        Locale locale = new Locale("", weather.country);
+        title.setText(String.format("%s, %s", weather.city, locale.getDisplayCountry()));
+
+        temperature.setVisibility(View.VISIBLE);
+        temperature.setText(getString(R.string.temperature_unit, weather.temperature));
+
+        latitude.setVisibility(View.VISIBLE);
+        if (weather.latitude > 0) {
+            latitude.setText(getString(R.string.to_north, weather.latitude));
+        } else {
+            latitude.setText(getString(R.string.to_south, weather.latitude));
+        }
+
+        longitude.setVisibility(View.VISIBLE);
+        if (weather.longitude > 0) {
+            longitude.setText(getString(R.string.to_east, weather.longitude));
+        } else {
+            longitude.setText(getString(R.string.to_west, weather.longitude));
+        }
+
+        pressure.setVisibility(View.VISIBLE);
+        pressure.setText(getString(R.string.pressure_unit, weather.pressure));
+
+        sunrise.setVisibility(View.VISIBLE);
+        Date sunriseTime = new Date(weather.sunrise * 1000);
+        String readableSunrise = sunriseTime.getHours() + ":" + sunriseTime.getMinutes();
+        sunrise.setText(readableSunrise);
+
+        sunset.setVisibility(View.VISIBLE);
+        Date sunsetTime = new Date(weather.sunset * 1000);
+        String readableSunset = sunsetTime.getHours() + ":" + sunsetTime.getMinutes();
+        sunset.setText(readableSunset);
     }
 }

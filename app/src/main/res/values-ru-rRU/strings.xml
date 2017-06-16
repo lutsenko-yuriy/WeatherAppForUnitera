@@ -19,10 +19,12 @@
 
     <string name="sunset_title">Заход</string>
 
-    <string name="to_north"> с.ш.</string>
-    <string name="to_south"> ю.ш.</string>
-    <string name="to_west"> з.д.</string>
-    <string name="to_east"> в.д.</string>
+    <string name="to_north">%.2f˚ с.ш.</string>
+    <string name="to_south">%.2f˚ ю.ш.</string>
+    <string name="to_west">%.2f˚ з.д.</string>
+    <string name="to_east">%.2f˚ в.д.</string>
 
-    <string name="pressure_unit"> кПа</string>
+    <string name="pressure_unit">%.0f мм рт. ст.</string>
+
+    <string name="error_message">Не удаётся загрузить погоду</string>
 </resources>
