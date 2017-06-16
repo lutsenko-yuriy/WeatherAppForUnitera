@@ -12,7 +12,8 @@ import io.reactivex.Observable;
  * Created by yurich on 16.06.17.
  */
 
-class WeatherViewModel extends ViewModel {
+@SuppressWarnings("ALL")
+public class WeatherViewModel extends ViewModel {
 
     private WeatherModel weatherModel = new WeatherModel();
 

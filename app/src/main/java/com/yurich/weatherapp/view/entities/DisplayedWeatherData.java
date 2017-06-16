@@ -16,6 +16,7 @@ public class DisplayedWeatherData {
     public double latitude;
     public double longitude;
 
+    // Время по Гринвичу
     public long sunrise;
     public long sunset;
 

@@ -65,7 +65,7 @@ public class MainActivity extends LifecycleActivity {
 
     private void setupModel() {
         weatherViewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
-        // Создание OpenWeatherMap API создавайте сами
+        // Создание ключа OpenWeatherMap API
         // предоставляется проверяющему(-им)
         weatherViewModel.setupModel(getString(R.string.appid), getString(R.string.metrics));
     }
@@ -145,12 +145,22 @@ public class MainActivity extends LifecycleActivity {
 
         sunrise.setVisibility(View.VISIBLE);
         Date sunriseTime = new Date(weather.sunrise * 1000);
-        String readableSunrise = sunriseTime.getHours() + ":" + sunriseTime.getMinutes();
+        String readableSunrise = String.format(
+                locale,
+                "%02d:%02d",
+                sunriseTime.getHours(),
+                sunriseTime.getMinutes()
+        );
         sunrise.setText(readableSunrise);
 
         sunset.setVisibility(View.VISIBLE);
         Date sunsetTime = new Date(weather.sunset * 1000);
-        String readableSunset = sunsetTime.getHours() + ":" + sunsetTime.getMinutes();
+        String readableSunset = String.format(
+                locale,
+                "%02d:%02d",
+                sunsetTime.getHours(),
+                sunsetTime.getMinutes()
+        );
         sunset.setText(readableSunset);
     }
 }
