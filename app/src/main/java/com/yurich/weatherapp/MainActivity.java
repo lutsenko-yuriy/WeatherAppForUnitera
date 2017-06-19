@@ -3,13 +3,10 @@ package com.yurich.weatherapp;
 import android.arch.lifecycle.LifecycleActivity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.yurich.weatherapp.view.entities.DisplayedWeatherData;
@@ -19,12 +16,13 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends LifecycleActivity {
 
+    public static final String DEFAULT_CITY_NAME = "";
+
     @BindView(R.id.city_field)
-    EditText city;
+    SearchView cityName;
 
     @BindView(R.id.city_information)
     TextView title;
@@ -56,22 +54,41 @@ public class MainActivity extends LifecycleActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        title.setVisibility(View.INVISIBLE);
-        temperature.setVisibility(View.INVISIBLE);
-        latitude.setVisibility(View.INVISIBLE);
-        longitude.setVisibility(View.INVISIBLE);
-        pressure.setVisibility(View.INVISIBLE);
-        sunrise.setVisibility(View.INVISIBLE);
-        sunset.setVisibility(View.INVISIBLE);
+        cityName.setOnQueryTextListener(
+                new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        loadWeather(query);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        return false;
+                    }
+                }
+        );
 
         setupModel();
         if (savedInstanceState == null) {
-            loadWeather();
+            initializeViews();
+            loadWeather(DEFAULT_CITY_NAME);
         } else {
-            updateView(
-                    (DisplayedWeatherData) savedInstanceState.getSerializable(WEATHER_KEY)
-            );
+            weatherData = (DisplayedWeatherData) savedInstanceState.getSerializable(WEATHER_KEY);
+            if (weatherData != null) {
+                updateView(weatherData);
+            }
         }
+    }
+
+    private void initializeViews() {
+        title.setAlpha(0f);
+        temperature.setAlpha(0f);
+        latitude.setAlpha(0f);
+        longitude.setAlpha(0f);
+        pressure.setAlpha(0f);
+        sunrise.setAlpha(0f);
+        sunset.setAlpha(0f);
     }
 
     private void setupModel() {
@@ -89,21 +106,18 @@ public class MainActivity extends LifecycleActivity {
         }
     }
 
-
-    @OnClick(R.id.city_search_button)
-    public void buttonClicked() {
-        loadWeather();
-    }
-
-    private void loadWeather() {
-        if (!TextUtils.isEmpty(city.getText().toString())) {
-            weatherViewModel.getWeather(city.getText().toString())
+    private void loadWeather(String cityName) {
+        if (!TextUtils.isEmpty(cityName)) {
+            weatherViewModel.getWeather(cityName)
+                    .doOnNext(displayedWeatherData -> {
+                        weatherData = displayedWeatherData;
+                    })
                     .subscribe(
                             this::updateView,
                             (error) -> Snackbar
                                     .make(
                                             findViewById(R.id.container),
-                                            R.string.error_message,
+                                            R.string.unable_to_load,
                                             Snackbar.LENGTH_LONG
                                     ).show()
                     );
@@ -111,32 +125,31 @@ public class MainActivity extends LifecycleActivity {
     }
 
     private void updateView(DisplayedWeatherData weather) {
-        weatherData = weather;
-        title.setVisibility(View.VISIBLE);
+        displayView(title);
         Locale locale = new Locale("", weather.country);
         title.setText(String.format("%s, %s", weather.city, locale.getDisplayCountry()));
 
-        temperature.setVisibility(View.VISIBLE);
+        displayView(temperature);
         temperature.setText(getString(R.string.temperature_unit, weather.temperature));
 
-        latitude.setVisibility(View.VISIBLE);
+        displayView(latitude);
         if (weather.latitude > 0) {
             latitude.setText(getString(R.string.to_north, weather.latitude));
         } else {
             latitude.setText(getString(R.string.to_south, -weather.latitude));
         }
 
-        longitude.setVisibility(View.VISIBLE);
+        displayView(longitude);
         if (weather.longitude > 0) {
             longitude.setText(getString(R.string.to_east, weather.longitude));
         } else {
             longitude.setText(getString(R.string.to_west, -weather.longitude));
         }
 
-        pressure.setVisibility(View.VISIBLE);
+        displayView(pressure);
         pressure.setText(getString(R.string.pressure_unit, weather.pressure));
 
-        sunrise.setVisibility(View.VISIBLE);
+        displayView(sunrise);
         Date sunriseTime = new Date(weather.sunrise * 1000);
         String readableSunrise = String.format(
                 locale,
@@ -146,7 +159,7 @@ public class MainActivity extends LifecycleActivity {
         );
         sunrise.setText(readableSunrise);
 
-        sunset.setVisibility(View.VISIBLE);
+        displayView(sunset);
         Date sunsetTime = new Date(weather.sunset * 1000);
         String readableSunset = String.format(
                 locale,
@@ -155,5 +168,12 @@ public class MainActivity extends LifecycleActivity {
                 sunsetTime.getMinutes()
         );
         sunset.setText(readableSunset);
+    }
+
+    private void displayView(View view) {
+        view.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .start();
     }
 }

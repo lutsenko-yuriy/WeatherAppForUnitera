@@ -32,7 +32,8 @@
 
     <string name="temperature_unit">%.0f˚C</string>
 
-    <string name="error_message">Failed to load weather</string>
+    <string name="unable_to_load">Failed to load weather</string>
 
     <string name="metrics">metric</string>
+    <string name="empty_string">Insert city</string>
 </resources>
