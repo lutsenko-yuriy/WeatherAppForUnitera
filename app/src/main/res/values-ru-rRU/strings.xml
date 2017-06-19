@@ -26,5 +26,6 @@
 
     <string name="pressure_unit">%.0f мм рт. ст.</string>
 
-    <string name="error_message">Не удаётся загрузить погоду</string>
+    <string name="unable_to_load">Не удаётся загрузить погоду</string>
+    <string name="empty_string">Введите название города</string>
 </resources>
